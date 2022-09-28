@@ -15,8 +15,9 @@ More examples are in the __Examples__ notebook!
 
 ## Formatting
 Formatting uses css-style formatting, with some extensions.
-<img width="1052" alt="example_style" src="https://user-images.githubusercontent.com/3829669/192710785-f383d200-dd97-4e25-b3c1-b8f6d1fe9953.png">
+<img width="1048" alt="example_style" src="https://user-images.githubusercontent.com/3829669/192724236-a94490f7-5eed-4f4c-a46c-01485d043163.png">
 
-## Setting styles
+## Functions
+<img width="1050" alt="example_functions_1" src="https://user-images.githubusercontent.com/3829669/192724303-b956f052-e391-4816-8026-bc225396c397.png">
 
-
+<img width="1044" alt="example_functions_2" src="https://user-images.githubusercontent.com/3829669/192724329-d66ef30c-45a6-4bea-9e14-96801713ef47.png">
