@@ -1,12 +1,11 @@
 from setuptools import setup
 setup(name="customized_table",
     version="1.5",
-    description="Jupyter Notebook util for generating customized tables",
-    url="#",
+    description="Creates flexible tables in Jupyter Notebooks with lots of formatting options",
     author="Johan Hagelbäck",
-    author_email="johan.hagelback@fortnox.se",
+    author_email="johan.hagelback@gmail.com",
     license="MIT",
     packages=["customized_table"],
-    zip_safe=False,
+    url="https://github.com/jhagelback/customized_table",
     install_requires=["termcolor"]
     )
