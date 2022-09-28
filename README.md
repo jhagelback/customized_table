@@ -11,6 +11,8 @@ Install with __pip__:
 Generates the following table:
 <img width="846" alt="example_table" src="https://user-images.githubusercontent.com/3829669/192698504-2bf1574d-5134-40e2-879f-ec0bf4531869.png">
 
+More examples are in the __Examples__ notebook!
+
 ## Formatting examples
 Formatting uses css-style formatting, with some extensions.
 
