@@ -6,10 +6,10 @@ Install with __pip__:
 > pip install customized_table
 
 ## Example
-<img width="701" alt="example_code" src="https://user-images.githubusercontent.com/3829669/192698585-31cb9757-fb46-4d29-97d2-6e1fea49ee49.png">
+<img width="769" alt="example_style" src="https://user-images.githubusercontent.com/3829669/192789081-bd0f96f4-bb1c-45b1-9e60-192c001db8d2.png">
 
 Generates the following table:
-<img width="846" alt="example_table" src="https://user-images.githubusercontent.com/3829669/192698504-2bf1574d-5134-40e2-879f-ec0bf4531869.png">
+<img width="882" alt="example_table" src="https://user-images.githubusercontent.com/3829669/192789104-240174ff-aa59-40e1-bde4-51cb521d762a.png">
 
 More examples are in the __Examples__ notebook!
 
