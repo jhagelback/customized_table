@@ -1,4 +1,4 @@
-from .customized_table import CustomizedTable, tag_text, from_csv, tag_prefixformat, tag_cellformat
+from .customized_table import CustomizedTable, tag_text, from_csv
 
-def __version__():
-    return "1.5"
+__version__ = "0.1.0"
+__author__ = "Johan Hagelbäck"
