@@ -13,7 +13,7 @@ Generates the following table:
 
 More examples are in the __Examples__ notebook!
 
-## Formatting examples
+## Formatting
 Formatting uses css-style formatting, with some extensions.
 <img width="1052" alt="example_style" src="https://user-images.githubusercontent.com/3829669/192710785-f383d200-dd97-4e25-b3c1-b8f6d1fe9953.png">
 
