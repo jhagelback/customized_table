@@ -20,4 +20,4 @@ Formatting uses css-style formatting with the following tags:
 ## Functions
 <img width="1124" alt="docs_functions_ct" src="https://user-images.githubusercontent.com/3829669/192965040-1b574b93-9a3e-459e-bdb5-0e257a608c61.png">
 
-<img width="1121" alt="docs_functions_general" src="https://user-images.githubusercontent.com/3829669/192965066-ac5d5faf-eaab-49a4-b86a-26458934dba2.png">
+<img width="1124" alt="docs_functions_general" src="https://user-images.githubusercontent.com/3829669/193030093-e3c2b09e-ed13-4075-8e67-a1fee19ada7c.png">
