@@ -163,6 +163,10 @@ def tag_text(txt):
 
     # Add last part
     s += txt
+    
+    # Line breaks
+    s = s.replace("\n", "<br/>")
+    
     return s
 
 #
@@ -265,6 +269,14 @@ def update_tags(p):
         p["color"] = tag_default_color(p["color"])
     if "background" in p:
         p["background"] = tag_default_color(p["background"])
+        
+    # Other tags
+    if "bold" in p:
+        p["font-weight"] = "bold"
+    if "italic" in p:
+        p["font-style"] = "italic"
+    if "normal" in p:
+        p["font-style"] = "normal"
 
 #
 # Generates a table that is styled using css.
