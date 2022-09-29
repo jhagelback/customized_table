@@ -149,13 +149,17 @@ def tag_text(txt):
         if tags == "/":
             s += "</span>"
         else:
-            tag = tags.split("|")
+            tag = tags.split(" ")
+            if "|" in tags:
+                tag = tags.split("|")
             style = ""
             for ti in tag:
                 if ti == "bold":
                     style += "font-weight:bold;"
                 elif ti == "italic":
                     style += "font-style:italic;"
+                elif ti == "normal":
+                    style += "font-style:normal;"
                 else:
                     ti = tag_default_color(ti)
                     style += f"color:{ti};"
@@ -254,7 +258,40 @@ def to_excel_style(style, workbook):
 # Updates style to correct css tag.
 #
 def update_tags(p):
-    # Add correct borders
+    # Font shorthand tag
+    if "font" in p:
+        vals = p["font"].split(" ")
+        if "|" in p["font"]:
+            vals = p["font"].split("|")
+        for v in vals:
+            if v == "bold":
+                p["font-weight"] = "bold"
+            elif v == "italic":
+                p["font-style"] = "italic"
+            elif v == "normal":
+                p["font-style"] = "normal"
+            elif v.endswith("px"):
+                p["font-size"] = v
+            else:
+                p["font-family"] = v
+        del p["font"]
+    
+    # Border shorthand tag
+    if "border" in p:
+        vals = p["border"].split(" ")
+        if "|" in p["border"]:
+            vals = p["border"].split("|")
+        if "top" in vals:
+            p["border-top"] = 1
+        if "bottom" in vals:
+            p["border-bottom"] = 1
+        if "left" in vals:
+            p["border-left"] = 1
+        if "right" in vals:
+            p["border-right"] = 1
+        del p["border"]
+    
+    # Re-format to correct CSS borders
     if "border-top" in p and str(p["border-top"]) == "1":
         p["border-top"] = "1px solid #aaa"
     if "border-bottom" in p and str(p["border-bottom"]) == "1":
@@ -263,20 +300,40 @@ def update_tags(p):
         p["border-left"] = "1px solid #aaa"
     if "border-right" in p and str(p["border-right"]) == "1":
         p["border-right"] = "1px solid #aaa"
+        
+    # Padding
+    if "padding" in p:
+        vals = p["padding"].split(" ")
+        if "|" in p["padding"]:
+            vals = p["padding"].split("|")
+        if len(vals) == 4:
+            p["padding-top"] = vals[0]
+            p["padding-right"] = vals[1]
+            p["padding-bottom"] = vals[2]
+            p["padding-left"] = vals[3]
+        if len(vals) == 3:
+            p["padding-top"] = vals[0]
+            p["padding-right"] = vals[1]
+            p["padding-bottom"] = vals[2]
+            p["padding-left"] = vals[1]
+        if len(vals) == 2:
+            p["padding-top"] = vals[0]
+            p["padding-right"] = vals[1]
+            p["padding-bottom"] = vals[0]
+            p["padding-left"] = vals[1]
+        if len(vals) == 1:
+            p["padding-top"] = vals[0]
+            p["padding-right"] = vals[0]
+            p["padding-bottom"] = vals[0]
+            p["padding-left"] = vals[0]
+        del p["padding"]
 
-    # Check default colors
+    # Re-format default colors
     if "color" in p:
         p["color"] = tag_default_color(p["color"])
     if "background" in p:
         p["background"] = tag_default_color(p["background"])
-        
-    # Other tags
-    if "bold" in p:
-        p["font-weight"] = "bold"
-    if "italic" in p:
-        p["font-style"] = "italic"
-    if "normal" in p:
-        p["font-style"] = "normal"
+
 
 #
 # Generates a table that is styled using css.
@@ -285,10 +342,14 @@ class CustomizedTable:
     #
     # Init new table with the specified columns (and optional default style).
     #
-    def __init__(self, cols, style={}, header_style={}, subheader_style={}, width=None, header=True):
+    def __init__(self, cols, style={}, header_style={}, subheader_style={}, width=None, header=True, tag_warnings=True):
         if not self.valid(cols, [list]): cols = list(cols)
         if not self.valid(style, [dict]): style = {}
         if not self.valid(header, [bool]): header = True
+        self.tag_warnings = tag_warnings
+        self.valid_style(style)
+        self.valid_style(header_style)
+        self.valid_style(subheader_style)
         
         self.width = width
         self.cols = cols # Columns
@@ -299,8 +360,7 @@ class CustomizedTable:
         
         # Default style
         self.default_style = {
-            "font-family": "Courier",
-            "font-size": "12px",
+            "font": "Courier 12px",
             "text-align": "left",
             "background": "white",
             "padding-top": "3px",
@@ -310,35 +370,52 @@ class CustomizedTable:
         }
         for tag,val in style.items():
             self.default_style.update({tag: val})
+        #update_tags(self.default_style)
         
         # Header style
         self.header_style = {
-            "font-weight": "bold",
+            "font": "bold",
             "color": "black",
             "background": "#ddd",
             "padding-top": "3px",
             "padding-bottom": "3px",
             "padding-left": "5px",
             "padding-right": "15px",
-            "border-top": "1px solid #aaa",
-            "border-bottom": "1px solid #aaa",
+            "border": "top bottom",
         }
         for tag,val in header_style.items():
             self.header_style.update({tag: val})
-        update_tags(self.header_style)
+        #update_tags(self.header_style)
         
         # Footer style
         self.subheader_style = {
             "color": "black",
             "background": "#ddd",
-            "border-top": "1px solid #aaa",
-            "border-bottom": "1px solid #aaa",
+            "border": "top bottom",
             "row-toggle-background": "0",
         }
         for tag,val in subheader_style.items():
             self.subheader_style.update({tag: val})
-        update_tags(self.subheader_style)
-        
+        #update_tags(self.subheader_style)
+    
+    #
+    # Checks if style tag contains valid tags.
+    #
+    def valid_style(self, style):
+        # Check if warnings are enabled
+        if not self.tag_warnings:
+            return
+        # Check if style is optional
+        if style is None:
+            return
+        # Check tags in style
+        used_tags = set(["color", "background", "font", "border", "text-align", "row-toggle-background", "num-format", "cell-format", "padding"])
+        for tag in style.keys():
+            if tag not in used_tags:
+                # Get caller function
+                w = colored("Warning ", "red", attrs=["bold"]) + colored(f"{sys._getframe().f_back.f_code.co_name}", "blue") + ": "
+                print(w + f"tag " + colored(tag, "yellow", attrs=["bold"]) +  " is not valid")
+    
     #
     # Checks if a value is valid.
     #
@@ -361,6 +438,7 @@ class CustomizedTable:
         if type(value) == list and length is not None and len(value) != length:
             print(w + f"expected list size {length}, got {len(value)}")
             return False
+        
         return True
     
     #
@@ -401,6 +479,7 @@ class CustomizedTable:
         if type(cols) in [int,str]: cols = [cols]
         if not self.valid(cols, [list,range]): return
         if not self.valid(style, [dict]): return
+        self.valid_style(style)
         
         for col in cols:
             if not self.valid(col, [str,int], min_val=0, max_val=len(self.cols)-1): return
@@ -415,6 +494,7 @@ class CustomizedTable:
         if type(rows) == int: rows = [rows]
         if not self.valid(rows, [list,range]): return
         if not self.valid(style, [dict]): return
+        self.valid_style(style)
         
         for row in rows:
             # Set to last row
@@ -433,6 +513,7 @@ class CustomizedTable:
         if not self.valid(cols, [list,range]): return
         if not self.valid(rows, [list,range]): return
         if not self.valid(style, [dict]): return
+        self.valid_style(style)
         
         for row in rows:
             # Set to last row
@@ -451,6 +532,7 @@ class CustomizedTable:
     #
     def add_row(self, row, style=None):
         if not self.valid(row, [list], length=len(self.cols)): return
+        self.valid_style(style)
         
         self.rows.append(row)
         if style is not None:
@@ -464,6 +546,7 @@ class CustomizedTable:
     #
     def add_colspan_row(self, row, style=None):
         if not self.valid(row, [list]): return
+        self.valid_style(style)
         
         self.rows.append(row)
         if style is not None:
@@ -520,7 +603,12 @@ class CustomizedTable:
     #
     def merge_style(self, p, tmp):
         for tag,val in tmp.items():
-            p.update({tag: val})
+            if tag == "font" and "font" in p:
+                p["font"] += f" {val}"
+            elif tag == "border" and "border" in p:
+                p["border"] += f" {val}"
+            else:
+                p.update({tag: val})
     
     #
     # Get style for the specified cell (column number + row number).
@@ -574,12 +662,14 @@ class CustomizedTable:
         
         # Header
         if self.header:
+            p = self.header_style.copy()
+            update_tags(p)
             t += "<tr>"
             for c,w in zip(self.cols, self.w):
                 wt = ""
                 if w > 0:
                     wt = f" width={w}"
-                t += f"<td style='{self.style_tag(self.header_style)}'{wt}>{c}</td>"
+                t += f"<td style='{self.style_tag(p)}'{wt}>{c}</td>"
             t += "</tr>"
         
         # Rows
