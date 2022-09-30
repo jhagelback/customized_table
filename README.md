@@ -14,10 +14,10 @@ Generates the following table:
 More examples are in the __Examples__ notebook!
 
 ## Formatting
-Formatting uses css-style formatting, with some extensions.
-<img width="1123" alt="docs_tags" src="https://user-images.githubusercontent.com/3829669/192965002-6be52e3c-322e-4999-bbc8-ea74828d86d9.png">
+Formatting uses css-style formatting with the following tags:
+<img width="1124" alt="docs_tags" src="https://user-images.githubusercontent.com/3829669/193028366-794950be-b5e2-41c7-bf59-5c0862a96c2f.png">
 
 ## Functions
 <img width="1124" alt="docs_functions_ct" src="https://user-images.githubusercontent.com/3829669/192965040-1b574b93-9a3e-459e-bdb5-0e257a608c61.png">
 
-<img width="1121" alt="docs_functions_general" src="https://user-images.githubusercontent.com/3829669/192965066-ac5d5faf-eaab-49a4-b86a-26458934dba2.png">
+<img width="1124" alt="docs_functions_general" src="https://user-images.githubusercontent.com/3829669/193030093-e3c2b09e-ed13-4075-8e67-a1fee19ada7c.png">
