@@ -210,6 +210,9 @@ def fix_excel_color(col):
 # Convert css style to Excel style.
 #
 def to_excel_style(style, workbook):
+    style = style.copy()
+    update_tags(style)
+    
     est = {}
     if "font-family" in style:
         est["font_name"] = style["font-family"]
@@ -370,11 +373,10 @@ class CustomizedTable:
         }
         for tag,val in style.items():
             self.default_style.update({tag: val})
-        #update_tags(self.default_style)
         
         # Header style
         self.header_style = {
-            "font": "bold",
+            "font": "Courier 12px bold",
             "color": "black",
             "background": "#ddd",
             "padding-top": "3px",
@@ -385,7 +387,6 @@ class CustomizedTable:
         }
         for tag,val in header_style.items():
             self.header_style.update({tag: val})
-        #update_tags(self.header_style)
         
         # Footer style
         self.subheader_style = {
@@ -396,8 +397,7 @@ class CustomizedTable:
         }
         for tag,val in subheader_style.items():
             self.subheader_style.update({tag: val})
-        #update_tags(self.subheader_style)
-    
+        
     #
     # Checks if style tag contains valid tags.
     #
