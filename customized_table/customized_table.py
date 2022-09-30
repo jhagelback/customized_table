@@ -376,7 +376,7 @@ class CustomizedTable:
         
         # Header style
         self.header_style = {
-            "font": "Courier 12px bold",
+            "font": self.default_style["font"] + " bold",
             "color": "black",
             "background": "#ddd",
             "padding-top": "3px",
@@ -390,6 +390,7 @@ class CustomizedTable:
         
         # Footer style
         self.subheader_style = {
+            "font": self.default_style["font"] + " bold",
             "color": "black",
             "background": "#ddd",
             "border": "top bottom",
