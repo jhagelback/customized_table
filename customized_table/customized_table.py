@@ -819,3 +819,66 @@ def from_csv(file):
     except:
         print(colored("Error: ", "red", attrs=["bold"]) + "unable to create table from csv file")
         return CustomizedTable([""])
+
+
+#
+# Generates a counts table from a list or dict.
+#
+def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=None):
+    if type(data) not in [dict, list]:
+        print(colored("Warning", "red", attrs=["bold"]) + ": data must dict or list")
+        return
+    
+    # Convert from list to dict
+    if type(data) == list:
+        cnt = {}
+        for r in data:
+            v = r
+            if type(r) == list:
+                v = r[cidx]
+            if v not in cnt:
+                cnt.update({v: 0})
+            cnt[v] += 1
+    if type(data) == dict:
+        cnt = data
+    
+    # Generate table from dict
+    t = CustomizedTable([title, "No", "Part"])
+    t.column_style(1, {"color": "value"})
+    t.column_style(2, {"color": "percent", "num-format": "pct-2"})
+    tot = sum(list(cnt.values()))
+    ngrp = 0
+    for key,n in cnt.items():
+        if group is not None and t.no_rows() >= group:
+            ngrp += 1
+        else:
+            t.add_row([key,n,n/tot])
+    
+    # Sort table
+    if sort in ["key", 0]:
+        t.sort(0)
+    if sort in ["asc", "ascending", 1]:
+        t.sort(1)
+    if sort in ["desc", "descending", 2]:
+        t.sort(1, reverse=True)
+    
+    # Grouped row
+    if ngrp > 0:
+        t.add_row(["Other:",ngrp,ngrp/tot])
+        t.cell_style(0,-1,{"color": "#811"})
+        t.cell_style(1,-1,{"color": "#933"})
+        t.cell_style(2,-1,{"color": "#944"})
+
+    # Bottom border
+    t.row_style(-1, {"border": "bottom"})
+    
+    # Add total and/or mean row
+    if footer is not None:
+        if "total" in footer:
+            t.add_row(["Total:", tot, ""], style={"background": "#eee", "row-toggle-background": 0})
+        if "mean" in footer:
+            t.add_row(["Mean:", tot/len(cnt), ""], style={"background": "#eee", "row-toggle-background": 0})
+            t.cell_style(1,-1,{"num-format": "dec-2"})
+    
+    return t
+
