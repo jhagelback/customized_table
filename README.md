@@ -6,4 +6,4 @@ Install with __pip__:
 > pip install customized_table
 
 ## Documentation
-See the [Docs|https://github.com/jhagelback/customized_table/blob/main/Docs.ipynb] notebook.
+See the [Docs](https://github.com/jhagelback/customized_table/blob/main/Docs.ipynb) notebook.
