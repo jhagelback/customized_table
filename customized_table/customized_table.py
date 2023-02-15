@@ -353,6 +353,7 @@ class CustomizedTable:
         self.valid_style(style)
         self.valid_style(header_style)
         self.valid_style(subheader_style)
+        self.style_rules = []
         
         self.width = width
         self.cols = cols # Columns
@@ -528,6 +529,21 @@ class CustomizedTable:
                 key = f"{col}-{row}"
                 self.styles[key] = style
     
+    
+    #
+    #
+    #
+    def style_rule(self, col, comp, val, style, cidx=None):
+        if not self.valid(col, [int,str]): return
+        if not self.valid(val, [int,float,str]): return
+        if not self.valid(style, [dict]): return
+        if comp not in [">",">=","<","<=","=","=="]: return
+        
+        col = self.column_number(col)
+        if cidx is not None:
+            cidx = self.column_number(cidx)
+        self.style_rules.append([col, comp, val, style, cidx])
+    
     #
     # Adds a row to the table.
     #
@@ -679,6 +695,27 @@ class CustomizedTable:
             for ci,cell in enumerate(row):
                 # Get style for cell
                 p = self.get_style(ci,ri)
+                
+                for rule in self.style_rules:
+                    match = False
+                    if rule[1] == ">" and row[rule[0]] > rule[2]:
+                        match = True
+                    if rule[1] == ">=" and row[rule[0]] >= rule[2]:
+                        match = True
+                    if rule[1] == "<" and row[rule[0]] < rule[2]:
+                        match = True
+                    if rule[1] == "<=" and row[rule[0]] <= rule[2]:
+                        match = True
+                    if rule[1] == "=" and row[rule[0]] == rule[2]:
+                        match = True
+                    if rule[1] == "==" and row[rule[0]] == rule[2]:
+                        match = True
+                    
+                    if match:
+                        if rule[4] is None:
+                            p.update(rule[3])
+                        elif rule[4] == ci:
+                            p.update(rule[3])
                 
                 # Check number formats or cell formats
                 if "num-format" in p:

@@ -129,6 +129,16 @@ def docs_customizedtable():
                         tag_text("&nbsp;<#a44 italic>style</> Style (tags + values). <#888>(dict)</>"),
                         ]])
     t.cell_style(1, -1, {"cell-format": "list:\n"})
+    
+    t.add_row(["style_rule", ["Sets style to row or cell based on comparisons.", 
+                        "Params:", 
+                        tag_text("&nbsp;<#a44 italic>col</> Column to compare value for. <#888>(column name or index)</>"),
+                        tag_text("&nbsp;<#a44 italic>comp</> Comparison identifier. <#888>('&gt;','&gt;=','&lt;','&lt;=','=')</>"), 
+                        tag_text("&nbsp;<#a44 italic>val</> Value to compare with. <#888>(int,float,str)</>"),
+                        tag_text("&nbsp;<#a44 italic>style</> Style (tags + values). <#888>(dict)</>"),
+                        tag_text("&nbsp;<#a44 italic>cidx</> Cell column index to set style for, or None for whole row. <#888>(column name or index, or None)</>"),
+                        ]])
+    t.cell_style(1, -1, {"cell-format": "list:\n"})
 
     t.add_row(["sort", ["Sorts the table on a specified column.", 
                         "Params:", 

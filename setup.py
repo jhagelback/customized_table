@@ -1,6 +1,6 @@
 from setuptools import setup
 setup(name="customized_table",
-    version="0.1.5",
+    version="0.1.6",
     author="Johan Hagelbäck",
     author_email="johan.hagelback@gmail.com",
     description="Creates flexible tables in Jupyter Notebooks with lots of formatting options",
