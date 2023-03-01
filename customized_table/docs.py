@@ -207,7 +207,7 @@ def docs_general():
                         "Params:", 
                         tag_text("&nbsp;<#a44 italic>data</> Data to generate counts from. <#888>(list or dict)</>"),
                         tag_text("&nbsp;<#a44 italic>cidx</> Column to generate counts from, if data is list of lists. <#888>(column index, optional)</>"),
-                        tag_text("&nbsp;<#a44 italic>title</> Title of the table. <#888>(string, optional)</>"),
+                        tag_text("&nbsp;<#a44 italic>labels</> Set labels for the counts table (title,no,part,total,mean). <#888>(dict, optional)</>"),
                         tag_text("&nbsp;<#a44 italic>sort</> How to sort the counts table. <#888>(None for no sorting, or 'key', 'asc', 'desc')</>"),
                         tag_text("&nbsp;<#a44 italic>footer</> What to show in the footer. <#888>(list ('total','mean') or None)</>"),
                         tag_text("&nbsp;<#a44 italic>group</> Group all entries after the specified row to make the table more compact. <#888>(row index, optional)</>"),

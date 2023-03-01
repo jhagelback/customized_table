@@ -865,7 +865,7 @@ def from_csv(file):
 #
 # Generates a counts table from a list or dict.
 #
-def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=None, style=None):
+def generate_counts(data, cidx=0, labels=None, sort=None, footer=["total"], group=None, style=None):
     if type(data) not in [dict, list]:
         print(colored("Warning", "red", attrs=["bold"]) + ": data must dict or list")
         return
@@ -884,17 +884,24 @@ def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=N
         cnt = data
     
     # Generate table from dict
+    title = ""
+    if labels is not None and "title" in labels:
+        title = labels["title"]
+    cnlbl = "No"
+    if labels is not None and "no" in labels:
+        cnlbl = labels["no"]
+    cplbl = "Part"
+    if labels is not None and "part" in labels:
+        cplbl = labels["part"]
+        
     if style is None:
-        t = CustomizedTable([title, "No", "Part"])
+        t = CustomizedTable([title, cnlbl, cplbl])
     else:
-        t = CustomizedTable([title, "No", "Part"], style=style)
+        t = CustomizedTable([title, cnlbl, cplbl], style=style)
     t.column_style(1, {"color": "value"})
     t.column_style(2, {"color": "percent", "num-format": "pct-2"})
     tot = sum(list(cnt.values()))
     for key,n in cnt.items():
-        #if group is not None and t.no_rows() >= group:
-        #    ngrp += 1
-        #else:
         t.add_row([key,n,n/tot])
     
     # Sort table
@@ -913,7 +920,10 @@ def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=N
     
     # Grouped row
     if ngrp > 0:
-        t.add_row(["Other:",ngrp,ngrp/tot])
+        olbl = "Other:"
+        if labels is not None and "other" in labels:
+            olbl = labels["other"]
+        t.add_row([olbl,ngrp,ngrp/tot])
         t.cell_style(0,-1,{"color": "#811"})
         t.cell_style(1,-1,{"color": "#933"})
         t.cell_style(2,-1,{"color": "#944"})
@@ -924,9 +934,15 @@ def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=N
     # Add total and/or mean row
     if footer is not None:
         if "total" in footer:
-            t.add_row(["Total:", tot, ""], style={"background": "#eee", "row-toggle-background": 0})
+            tlbl = "Total:"
+            if labels is not None and "total" in labels:
+                tlbl = labels["total"]
+            t.add_row([tlbl, tot, ""], style={"background": "#eee", "row-toggle-background": 0})
         if "mean" in footer:
-            t.add_row(["Mean:", tot/len(cnt), ""], style={"background": "#eee", "row-toggle-background": 0})
+            mlbl = "Mean:"
+            if labels is not None and "mean" in labels:
+                mlbl = labels["mean"]
+            t.add_row([mlbl, tot/len(cnt), ""], style={"background": "#eee", "row-toggle-background": 0})
             t.cell_style(1,-1,{"num-format": "dec-2"})
     
     return t
