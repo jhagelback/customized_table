@@ -865,7 +865,7 @@ def from_csv(file):
 #
 # Generates a counts table from a list or dict.
 #
-def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=None):
+def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=None, style=None):
     if type(data) not in [dict, list]:
         print(colored("Warning", "red", attrs=["bold"]) + ": data must dict or list")
         return
@@ -884,7 +884,10 @@ def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=N
         cnt = data
     
     # Generate table from dict
-    t = CustomizedTable([title, "No", "Part"])
+    if style is None:
+        t = CustomizedTable([title, "No", "Part"])
+    else:
+        t = CustomizedTable([title, "No", "Part"], style=style)
     t.column_style(1, {"color": "value"})
     t.column_style(2, {"color": "percent", "num-format": "pct-2"})
     tot = sum(list(cnt.values()))

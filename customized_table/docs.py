@@ -210,7 +210,9 @@ def docs_general():
                         tag_text("&nbsp;<#a44 italic>title</> Title of the table. <#888>(string, optional)</>"),
                         tag_text("&nbsp;<#a44 italic>sort</> How to sort the counts table. <#888>(None for no sorting, or 'key', 'asc', 'desc')</>"),
                         tag_text("&nbsp;<#a44 italic>footer</> What to show in the footer. <#888>(list ('total','mean') or None)</>"),
-                        tag_text("&nbsp;<#a44 italic>group</> Group all entries after the specified row, to make the table more compact. <#888>(row index or None)</>"),
+                        tag_text("&nbsp;<#a44 italic>group</> Group all entries after the specified row to make the table more compact. <#888>(row index, optional)</>"),
+                        tag_text("&nbsp;<#a44 italic>style</> Changes default formatting. <#888>(dict, optional)</>"),
+                        
                         ]])
     t.cell_style(1, -1, {"cell-format": "list:\n"})
 
