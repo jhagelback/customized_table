@@ -574,12 +574,16 @@ class CustomizedTable:
     #
     # Sort the table by column.
     #
-    def sort(self, col, reverse=False):
+    def sort(self, col, reverse=False, lock=None):
         if not self.valid(col, [str,int], min_val=0, max_val=len(self.cols)-1): return
         
         col = self.column_number(col)
+        if lock is not None:
+            tmp = self.rows[lock:]
+            self.rows = self.rows[:lock]
         self.rows = sorted(self.rows, key=lambda x: x[col], reverse=reverse)
-        
+        if lock is not None:
+            self.rows += tmp
         
     #
     # Adds a footer row to the table.
@@ -884,12 +888,11 @@ def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=N
     t.column_style(1, {"color": "value"})
     t.column_style(2, {"color": "percent", "num-format": "pct-2"})
     tot = sum(list(cnt.values()))
-    ngrp = 0
     for key,n in cnt.items():
-        if group is not None and t.no_rows() >= group:
-            ngrp += 1
-        else:
-            t.add_row([key,n,n/tot])
+        #if group is not None and t.no_rows() >= group:
+        #    ngrp += 1
+        #else:
+        t.add_row([key,n,n/tot])
     
     # Sort table
     if sort in ["key", 0]:
@@ -898,6 +901,12 @@ def generate_counts(data, cidx=0, title="", sort=None, footer=["total"], group=N
         t.sort(1)
     if sort in ["desc", "descending", 2]:
         t.sort(1, reverse=True)
+    
+    # Group after sort
+    ngrp = 0
+    if group is not None:
+        ngrp = sum([x[1] for x in t.rows[group:]])
+        t.rows = t.rows[:group]
     
     # Grouped row
     if ngrp > 0:

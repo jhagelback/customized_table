@@ -144,6 +144,8 @@ def docs_customizedtable():
                         "Params:", 
                         tag_text("&nbsp;<#a44 italic>col</> Column to to sort on. <#888>(column name or index)</>"),
                         tag_text("&nbsp;<#a44 italic>reverse</> Sort reversed or not (default is not). <#888>(True or False)</>"), 
+                        tag_text("&nbsp;<#a44 italic>lock</> Rows from the specified index are locked/not sorted. <#888>(None or index)</>"),
+                        
                         ]])
     t.cell_style(1, -1, {"cell-format": "list:\n"})
 
