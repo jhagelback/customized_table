@@ -171,6 +171,12 @@ def docs_customizedtable():
                         "Params:", 
                         tag_text("&nbsp;<#a44 italic>file</> File name and path for the file. <#888>(string)</>"),
                         ]])
+    
+    t.add_row(["to_image", [tag_text("Saves the table to a <italic>png</> image."),
+                        "Params:", 
+                        tag_text("&nbsp;<#a44 italic>file</> File name and path for the file. <#888>(string)</>"),
+                        ]])
+    
     t.cell_style(1, -1, {"cell-format": "list:\n"})
 
     t.display()

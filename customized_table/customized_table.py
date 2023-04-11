@@ -769,6 +769,22 @@ class CustomizedTable:
         except:
             print(colored("Error: ", "red", attrs=["bold"]) + "unable to create csv file")
     
+    
+    #
+    # Stores the table as a png image.
+    #
+    def to_image(self, file):
+        try:
+            import imgkit
+        except ImportError:
+            print(colored("Error: ", "red", attrs=["bold"]) + "you need ", end="")
+            print(colored("imgkit", "blue"), end="")
+            print(" installed to generate images")
+            return
+        
+        imgkit.from_string(self.generate(), file)
+        
+    
     #
     # Stores the table in an Excel file.
     #
