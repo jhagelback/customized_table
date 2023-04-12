@@ -345,7 +345,7 @@ class CustomizedTable:
     #
     # Init new table with the specified columns (and optional default style).
     #
-    def __init__(self, cols, style={}, header_style={}, subheader_style={}, width=None, header=True, tag_warnings=True):
+    def __init__(self, cols, style={}, header_style={}, subheader_style={}, width=None, header=True, tag_warnings=True, max_rows=None):
         if not self.valid(cols, [list]): cols = list(cols)
         if not self.valid(style, [dict]): style = {}
         if not self.valid(header, [bool]): header = True
@@ -355,12 +355,13 @@ class CustomizedTable:
         self.valid_style(subheader_style)
         self.style_rules = []
         
-        self.width = width
+        self.width = width # Table width
+        self.max_rows = max_rows # Max rows to show
         self.cols = cols # Columns
         self.w = [-1] * len(cols) # Column width
         self.rows = [] # Rows
-        self.styles = {} # Css-styles
-        self.header = header
+        self.styles = {} # CSS style
+        self.header = header # Header CSS
         
         # Default style
         self.default_style = {
@@ -531,7 +532,7 @@ class CustomizedTable:
     
     
     #
-    #
+    # Sets style rule for a column.
     #
     def style_rule(self, col, comp, val, style, cidx=None):
         if not self.valid(col, [int,str]): return
@@ -664,7 +665,7 @@ class CustomizedTable:
                 p.update({"filter": "brightness(100%)"})
         
         # Add bottom border to last row
-        if row == len(self.rows) - 1:
+        if row == len(self.rows) - 1 or (self.max_rows is not None and row == self.max_rows - 1):
             p.update({"border-bottom": "1px solid #aaa"})
             
         # Add top border to first row, if header is disabled
@@ -694,7 +695,9 @@ class CustomizedTable:
             t += "</tr>"
         
         # Rows
-        for ri,row in enumerate(self.rows):
+        if self.max_rows is None:
+            self.max_rows = self.no_rows()
+        for ri,row in enumerate(self.rows[:self.max_rows]):
             t += "<tr>"
             for ci,cell in enumerate(row):
                 # Get style for cell
