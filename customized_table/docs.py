@@ -80,6 +80,7 @@ def docs_customizedtable():
                         tag_text("&nbsp;<#a44 italic>width</> Sets table width. If not set, auto size is used. <#888>(int or None)</>"),
                         tag_text("&nbsp;<#a44 italic>header</> Show or hide header, default is show. <#888>(True or False)</>"),
                         tag_text("&nbsp;<#a44 italic>max_rows</> Set max rows to show. <#888>(int or None)</>"),
+                        tag_text("&nbsp;<#a44 italic>monospace</> Use standard or monospace default font. <#888>(True or False)</>"),
                         ]])
     t.cell_style(1, -1, {"cell-format": "list:\n"})
 

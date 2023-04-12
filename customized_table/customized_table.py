@@ -345,7 +345,7 @@ class CustomizedTable:
     #
     # Init new table with the specified columns (and optional default style).
     #
-    def __init__(self, cols, style={}, header_style={}, subheader_style={}, width=None, header=True, tag_warnings=True, max_rows=None):
+    def __init__(self, cols, style={}, header_style={}, subheader_style={}, width=None, header=True, tag_warnings=True, max_rows=None, monospace=False):
         if not self.valid(cols, [list]): cols = list(cols)
         if not self.valid(style, [dict]): style = {}
         if not self.valid(header, [bool]): header = True
@@ -365,7 +365,7 @@ class CustomizedTable:
         
         # Default style
         self.default_style = {
-            "font": "Courier 12px",
+            "font": "Verdana 12px",
             "text-align": "left",
             "background": "white",
             "padding-top": "3px",
@@ -373,6 +373,9 @@ class CustomizedTable:
             "padding-left": "5px",
             "padding-right": "15px",
         }
+        if monospace:
+            self.default_style["font"] = "Courier 12px"
+        
         for tag,val in style.items():
             self.default_style.update({tag: val})
         
