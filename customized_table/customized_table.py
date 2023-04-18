@@ -122,26 +122,44 @@ def tag_numformat(cell, p):
             return f"{cell:.6f}"
         
         if p["num-format"] == "int-1":
+            if type(cell) == int:
+                return cell
+            cell = round(cell,1)
             if cell.is_integer():
                 return int(cell)
             return f"{cell:.1f}"
         if p["num-format"] == "int-2":
+            if type(cell) == int:
+                return cell
+            cell = round(cell,2)
             if cell.is_integer():
                 return int(cell)
             return f"{cell:.2f}"
         if p["num-format"] == "int-3":
+            if type(cell) == int:
+                return cell
+            cell = round(cell,3)
             if cell.is_integer():
                 return int(cell)
             return f"{cell:.3f}"
         if p["num-format"] == "int-4":
+            if type(cell) == int:
+                return cell
+            cell = round(cell,4)
             if cell.is_integer():
                 return int(cell)
             return f"{cell:.4f}"
         if p["num-format"] == "int-5":
+            if type(cell) == int:
+                return cell
+            cell = round(cell,5)
             if cell.is_integer():
                 return int(cell)
             return f"{cell:.5f}"
         if p["num-format"] == "int-6":
+            if type(cell) == int:
+                return cell
+            cell = round(cell,6)
             if cell.is_integer():
                 return int(cell)
             return f"{cell:.6f}"
