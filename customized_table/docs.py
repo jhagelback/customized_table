@@ -45,6 +45,7 @@ def docs_formatting():
 
     t.add_row(["num-format", ["Number formatting:", 
                               tag_text("&nbsp;<italic #a44>dec-#</> formats values to # decimal digits, for example <value>3.14</> is shown for <value>3.14159</> using <italic #a44>dec-2</>"),
+                              tag_text("&nbsp;<italic #a44>int-#</> formats values to # decimal digits or no digits if integer, for example <value>3.14</> is shown for <value>3.14159</> and <value>3</> is shown for <value>3.0</> using <italic #a44>int-2</>"),
                               tag_text("&nbsp;<italic #a44>pct-#</> formats values to percents with # decimal digits, for example <value>73.1%</> is shown for <value>0.731</> using <italic #a44>pct-1</>"),
                               tag_text("&nbsp;<italic #a44>int</> formats values to integers, for example <value>3</> is shown for <value>3.14159</> using <italic #a44>int</>"),
                               tag_text("&nbsp;<italic #a44>prefix</> formats values to use prefixes, for example <value>2.5M</> is shown for <value>2500000</> using <italic #a44>prefix</>"),
