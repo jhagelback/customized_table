@@ -890,7 +890,7 @@ def display_multiple_columns(tabs):
 
     html = "<table><tr>"
     for t in tabs:
-        html += "<td>" + t.generate() + "</td>"
+        html += "<td style='vertical-align: top'>" + t.generate() + "</td>"
     html += "</tr></table>"
 
     display(HTML(html))
