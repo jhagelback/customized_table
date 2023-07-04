@@ -225,4 +225,10 @@ def docs_general():
                         ]])
     t.cell_style(1, -1, {"cell-format": "list:\n"})
 
+    t.add_row(["display_multiple_columns", [tag_text("Displays multiple tables in columns."),
+                        "Params:", 
+                        tag_text("&nbsp;<#a44 italic>tabs</> List of tables. <#888>(list of CustomizedTable)</>"),
+                        ]])
+    t.cell_style(1, -1, {"cell-format": "list:\n"})
+
     t.display()

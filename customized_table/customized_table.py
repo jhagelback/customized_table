@@ -879,6 +879,23 @@ class CustomizedTable:
         # Close file
         workbook.close()
 
+
+#
+# Displays multiple tables in columns.
+#
+def display_multiple_columns(tabs):
+    if type(tabs) != list:
+        print(colored("Warning ", "red", attrs=["bold"]) + "param 'tabs' must be of type list")
+        return
+
+    html = "<table><tr>"
+    for t in tabs:
+        html += "<td>" + t.generate() + "</td>"
+    html += "</tr></table>"
+
+    display(HTML(html))
+
+
 #
 # Creates a table from a csv file.
 #
