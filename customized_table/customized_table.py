@@ -2,6 +2,7 @@ from IPython.display import HTML, display
 import sys
 from termcolor import colored
 
+
 #
 # Default colors.
 #
@@ -29,7 +30,7 @@ default_colors = {
 #
 # Replaces color tag with default colors (if found).
 #
-def tag_default_color(col):
+def tag_default_color(col): # INTERNAL
     if col.lower() in default_colors:
         return default_colors[col.lower()]
     return col
@@ -37,7 +38,7 @@ def tag_default_color(col):
 #
 # Replaces cell contents with formatted values (if found).
 #
-def tag_cellformat(cell, p):
+def tag_cellformat(cell, p): # INTERNAL
     # List
     if "cell-format" in p and (p["cell-format"] == "list" or p["cell-format"].startswith("list:")) and type(cell) == list:
         if "num-format" in p:
@@ -58,7 +59,7 @@ def tag_cellformat(cell, p):
 #
 # Formats a value with prefix (for example M for million).
 #
-def tag_prefixformat(cell, fmt):
+def tag_prefixformat(cell, fmt): # INTERNAL
     if type(cell) not in [int,float]:
         return cell
     
@@ -91,7 +92,7 @@ def tag_prefixformat(cell, fmt):
 #
 # Replaces numbers with formatted values (if found).
 #
-def tag_numformat(cell, p):
+def tag_numformat(cell, p): # INTERNAL
     if "num-format" in p and (type(cell) == float or type(cell) == int):
         if p["num-format"] == "pct-0":
             return f"{cell*100:.0f}%"
@@ -172,7 +173,11 @@ def tag_numformat(cell, p):
     return cell
     
 #
-# Converts a cell text containing tags to correct format.
+# Applies formatting for texts containing tags.
+# PARAMS:
+# txt: Text string containing tags
+# RETURNS:
+# Formatted text (string)
 #
 def tag_text(txt):
     # No tags found
@@ -219,7 +224,7 @@ def tag_text(txt):
 #
 # Remove tags from text.
 #
-def remove_tags(txt):
+def remove_tags(txt): # INTERNAL
     if type(txt) != str:
         return txt
     
@@ -244,7 +249,7 @@ def remove_tags(txt):
 #
 # Fix colors to Excel style.
 #
-def fix_excel_color(col):
+def fix_excel_color(col): # INTERNAL
     if col.startswith("#") and len(col) == 4:
         col = "#" + col[1]*2 + col[2]*2 + col[3]* 2
     return col
@@ -252,7 +257,7 @@ def fix_excel_color(col):
 #
 # Convert css style to Excel style.
 #
-def to_excel_style(style, workbook):
+def to_excel_style(style, workbook): # INTERNAL
     style = style.copy()
     update_tags(style)
     
@@ -303,7 +308,7 @@ def to_excel_style(style, workbook):
 #
 # Updates style to correct css tag.
 #
-def update_tags(p):
+def update_tags(p): # INTERNAL
     # Font shorthand tag
     if "font" in p:
         vals = p["font"].split(" ")
@@ -387,6 +392,14 @@ def update_tags(p):
 class CustomizedTable:
     #
     # Init new table with the specified columns (and optional default style).
+    # PARAMS:
+    # cols: List of column names
+    # style: Set style for this table
+    # subheader_style: Set style for subheaders (if any)
+    # width: Specify width of this table (optional)
+    # header: Set to False to remove header
+    # tag_warnings: ?
+    # max_rows: Set max number of rows in this table (optional)
     #
     def __init__(self, cols, style={}, header_style={}, subheader_style={}, width=None, header=True, tag_warnings=True, max_rows=None, monospace=False):
         if not self.valid(cols, [list]): cols = list(cols)
@@ -450,7 +463,7 @@ class CustomizedTable:
     #
     # Checks if style tag contains valid tags.
     #
-    def valid_style(self, style):
+    def valid_style(self, style): # INTERNAL
         # Check if warnings are enabled
         if not self.tag_warnings:
             return
@@ -468,7 +481,7 @@ class CustomizedTable:
     #
     # Checks if a value is valid.
     #
-    def valid(self, value, types, min_val=None, max_val=None, length=None):
+    def valid(self, value, types, min_val=None, max_val=None, length=None): # INTERNAL
         # Get caller function
         w = colored("Warning ", "red", attrs=["bold"]) + colored(f"{sys._getframe().f_back.f_code.co_name}", "blue") + ": " 
         
@@ -491,13 +504,18 @@ class CustomizedTable:
         return True
     
     #
-    # Returns current number of rows.
+    # Returns current number of rows in the table.
+    # RETURNS:
+    # Number of rows (int)
     #
     def no_rows(self):
         return len(self.rows)
     
     #
-    # Sets column width for the specified column (column name or number). 
+    # Sets column width for the specified columns.
+    # PARAMS:
+    # cols: List of columns (index or name)
+    # width: Width for the specified columns
     #
     def column_width(self, cols, width):
         if type(cols) in [int,str]: cols = [cols]
@@ -511,7 +529,7 @@ class CustomizedTable:
     #
     # Returns the column number for a column.
     #
-    def column_number(self, col):
+    def column_number(self, col): # INTERNAL
         if type(col) == int:
             return col
         if type(col) == str:
@@ -522,7 +540,10 @@ class CustomizedTable:
         return -1
         
     #
-    # Set styles for one or more columns (column names or numbers).
+    # Set style for one or more columns.
+    # PARAMS:
+    # cols: List of columns (index or name)
+    # style: dict with style (example {'color': '#eee', 'font': 'bold'})
     #
     def column_style(self, cols, style):
         if type(cols) in [int,str]: cols = [cols]
@@ -537,7 +558,10 @@ class CustomizedTable:
             self.styles[key] = style
        
     #
-    # Set styles for one or more rows (row numbers).
+    # Set style for one or more rows.
+    # PARAMS:
+    # rows: List of rows (index)
+    # style: dict with style (example {'color': '#eee', 'font': 'bold'})
     #
     def row_style(self, rows, style):
         if type(rows) == int: rows = [rows]
@@ -554,7 +578,11 @@ class CustomizedTable:
             self.styles[key] = style
         
     #
-    # Sets style for one or more cells (column names or numbers + row numbers).
+    # Sets style for one or more cell.
+    # PARAMS:
+    # cols: List of columns (index or name)
+    # rows: List of rows (index)
+    # style: dict with style (example {'color': '#eee', 'font': 'bold'})
     #
     def cell_style(self, cols, rows, style):
         if type(cols) in [int,str]: cols = [cols]
@@ -579,6 +607,12 @@ class CustomizedTable:
     
     #
     # Sets style rule for a column.
+    # PARAMS:
+    # col: Column to compare value with (name or index)
+    # comp: Comparator ('>', '>=', '<', '=', '==')
+    # val: Value to compare cell values with, with the specified comparator
+    # style: dict with style (example {'color': '#eee', 'font': 'bold'})
+    # cidx: Cell column index to set style for, or None for whole row (column name or index) (optional)
     #
     def style_rule(self, col, comp, val, style, cidx=None):
         if not self.valid(col, [int,str]): return
@@ -593,6 +627,9 @@ class CustomizedTable:
     
     #
     # Adds a row to the table.
+    # PARAMS:
+    # row: Row to add (list) (example ['val',4,0.95])
+    # style: dict with style (example {'color': '#eee', 'font': 'bold'}) (optional)
     #
     def add_row(self, row, style=None):
         if not self.valid(row, [list], length=len(self.cols)): return
@@ -603,10 +640,12 @@ class CustomizedTable:
             if not self.valid(style, [dict]): return
             
             self.row_style(self.no_rows()-1, style)
-            
-        
+                
     #
     # Adds a row where cells can span over several columns to the table.
+    # PARAMS:
+    # row: Row to add (list) (example [["col 1+2", 2],["col 3", 1]])
+    # style: dict with style (example {'color': '#eee', 'font': 'bold'}) (optional)
     #
     def add_colspan_row(self, row, style=None):
         if not self.valid(row, [list]): return
@@ -619,7 +658,11 @@ class CustomizedTable:
             self.row_style(self.no_rows()-1, style)
             
     #
-    # Sort the table by column.
+    # Sort the table by the specified column.
+    # PARAMS:
+    # col: Column (index or name)
+    # reverse: Set to True for reverse sort (highest values first)
+    # lock: specifies number of rows last in the table to be excluded from sorting (optional)
     #
     def sort(self, col, reverse=False, lock=None):
         if not self.valid(col, [str,int], min_val=0, max_val=len(self.cols)-1): return
@@ -633,7 +676,9 @@ class CustomizedTable:
             self.rows += tmp
         
     #
-    # Adds a footer row to the table.
+    # Adds a subheader row to the table. Subheader rows uses subheader style instead of table style.
+    # PARAMS:
+    # row: Row to add (list) (example ['val',4,0.95]) 
     #
     def add_subheader(self, row):
         if not self.valid(row, [list]): return
@@ -643,6 +688,10 @@ class CustomizedTable:
     
     #
     # Updates the value in a cell.
+    # PARAMS:
+    # col: Column (index or name)
+    # row: Row (index)
+    # val: New value for cell
     #
     def update_cell(self, col, row, val):
         if not self.valid(col, [str,int], min_val=0, max_val=len(self.cols)-1): return
@@ -653,9 +702,9 @@ class CustomizedTable:
         self.rows[row][col] = val
     
     #
-    # Returns a css style for for a style dict.
+    # Returns a HTML CSS style for a style dict.
     #
-    def style_tag(self, params):
+    def style_tag(self, params): # INTERNAL
         s = ""
         if params is None:
             params = {}
@@ -669,7 +718,7 @@ class CustomizedTable:
     #
     # Merges a style with another style.
     #
-    def merge_style(self, p, tmp):
+    def merge_style(self, p, tmp): # INTERNAL
         for tag,val in tmp.items():
             if tag == "font" and "font" in p:
                 p["font"] += f" {val}"
@@ -681,7 +730,7 @@ class CustomizedTable:
     #
     # Get style for the specified cell (column number + row number).
     #
-    def get_style(self, col, row):
+    def get_style(self, col, row): # INTERNAL
         # Lowest prio: default style
         p = self.default_style.copy()
         
@@ -723,7 +772,7 @@ class CustomizedTable:
     #
     # Generates the table.
     #
-    def generate(self):
+    def generate(self): # INTERNAL
         t = "<table>"
         if self.width is not None:
             t = f"<table style='width={self.width}px; max-width:{self.width}px; min-width:{self.width}px; table-layout: fixed; word-wrap: break-word;'>"
@@ -796,7 +845,9 @@ class CustomizedTable:
         display(HTML(self.generate()))
         
     #
-    # Stores the table in a csv file.
+    # Stores the table to a csv file.
+    # PARAMS:
+    # file: Filename to store table in 
     #
     def to_csv(self, file):
         try:
@@ -821,6 +872,8 @@ class CustomizedTable:
     
     #
     # Stores the table as a png image.
+    # PARAMS:
+    # file: Filename to store table in 
     #
     def to_image(self, file):
         try:
@@ -836,6 +889,8 @@ class CustomizedTable:
     
     #
     # Stores the table in an Excel file.
+    # PARAMS:
+    # file: Filename to store table in 
     #
     def to_excel(self, file):
         try:
@@ -882,6 +937,8 @@ class CustomizedTable:
 
 #
 # Displays multiple tables in columns.
+# PARAMS:
+# tabs: list of CustomizedTable tables
 #
 def display_multiple_columns(tabs):
     if type(tabs) != list:
@@ -898,6 +955,8 @@ def display_multiple_columns(tabs):
 
 #
 # Creates a table from a csv file.
+# PARAMS:
+# file: Filename to read tabular data from
 #
 def from_csv(file):
     # Check if value is int
@@ -945,7 +1004,15 @@ def from_csv(file):
 
 
 #
-# Generates a counts table from a list or dict.
+# Generates a counts table from tabular data or dict.
+# PARAMS:
+# data: Table data (tabular data (list of lists) or dict)
+# cidx: Column to generate counts from, if tabular data (index)
+# labels: Change standard column names (example {'title': 'New title', 'no': 'Number', 'part': 'Part of'}) (optional)
+# sort: How to sort the table ('desc', 'asc' or 'key' for labels) (optional)
+# footer: Fields to show in footer (example ['total', 'mean']) (optional)
+# group: Group rows after the specified row (optional)
+# style: dict with style (example {'color': '#eee', 'font': 'bold'}) (optional)
 #
 def generate_counts(data, cidx=0, labels=None, sort=None, footer=["total"], group=None, style=None):
     if type(data) not in [dict, list]:
