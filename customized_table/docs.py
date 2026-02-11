@@ -163,6 +163,9 @@ def docs_customizedtable():
     t.add_row(["display", ["Displays the table."
                         ]])
     t.cell_style(1, -1, {"cell-format": "list:\n"})
+    t.add_row(["display_terminal", ["Displays the table in a terminal version."
+                        ]])
+    t.cell_style(1, -1, {"cell-format": "list:\n"})
 
     t.add_row(["to_csv", [tag_text("Saves the table to a <italic>csv</> file."),
                         "Params:", 

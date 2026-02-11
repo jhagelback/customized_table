@@ -768,6 +768,137 @@ class CustomizedTable:
             p.update({"border-top": "1px solid #aaa"})
         
         return  p
+
+    #
+    # Prints a table border in terminal
+    #
+    def border_terminal(self, colw, loc): # INTERNAL
+        loc = loc.upper()
+        
+        h = ""
+        if loc == "TOP":
+            h += "┏"
+        if loc == "MIDDLE":
+            h += "┣"
+        if loc == "BOTTOM":
+            h += "┗"
+
+        for i,c in enumerate(colw):
+            h += "━" * (c+2)
+            if i < len(colw)-1:
+                if loc == "TOP":
+                    h += "┳"
+                if loc == "MIDDLE":
+                    h += "╋"
+                if loc == "BOTTOM":
+                    h += "┻"
+            
+        if loc == "TOP":
+            h += "┓"
+        if loc == "MIDDLE":
+            h += "┫"
+        if loc == "BOTTOM":
+            h += "┛"
+        h += "\n"
+        return h
+
+    #
+    # Prints a cell value in terminal
+    #
+    def cell_terminal(self, val, w, style): # INTERNAL
+        c = "┃ "
+        # Formatting
+        col = "black"
+        attrs = []
+        if "font-weight" in style and style["font-weight"] == "bold":
+            attrs.append("bold")
+        if "font-style" in style and style["font-style"] == "italic":
+            attrs.append("italic")
+        if "color" in style and style["color"] in ["blue","#3b08d3"]:
+            col = "blue"
+        if "color" in style and style["color"] in ["cyan","#7a03fc"]:
+            col = "cyan"
+        if "color" in style and style["color"] in ["red","#fb4b04"]:
+            col = "red"
+        if "color" in style and style["color"] in ["yellow"]:
+            col = "yellow"
+        if "color" in style and style["color"] in ["green"]:
+            col = "green"
+        if "color" in style and style["color"] in ["light_grey","light_gray","#eee"]:
+            col = "light_grey"
+        # Append formated cell value
+        c += colored(f"{val}", col, attrs=attrs)
+        # Whitespace padding
+        cw = len(f"{val}")
+        c += " " * (w-cw+1)
+        return c
+
+    #
+    # Generates terminal table.
+    #
+    def generate_terminal(self): # INTERNAL
+        # Max rows
+        if self.max_rows is None:
+            self.max_rows = self.no_rows()
+            
+        # Step 1 - get column widths
+        colw = [0] * len(self.cols)
+        # -- header
+        if self.header:
+            for ci,c in enumerate(self.cols):
+                cval = len(f"{c}")
+                if colw[ci] < cval:
+                    colw[ci] = cval
+        # -- rows
+        for ri,row in enumerate(self.rows[:self.max_rows]):
+            for ci,cell in enumerate(row):
+                p = self.get_style(ci,ri)
+                if "num-format" in p:
+                    cell = tag_numformat(cell, p) 
+                cval = len(f"{cell}")
+                if colw[ci] < cval:
+                    colw[ci] = cval    
+
+        # Generate table
+        t = ""
+        t += self.border_terminal(colw, "TOP")
+
+        # Header
+        if self.header:
+            # Formatting
+            p = self.header_style.copy()
+            update_tags(p)
+            
+            h = ""
+            for ci,c in enumerate(self.cols):
+                h += self.cell_terminal(c, colw[ci], p)
+            t += f"{h}┃\n"
+            t += self.border_terminal(colw, "MIDDLE")
+        # Rows
+        nrows = len(self.rows[:self.max_rows])
+        for ri,row in enumerate(self.rows[:self.max_rows]):
+            r = ""
+            for ci,cell in enumerate(row):
+                # Formatting
+                p = self.get_style(ci,ri)
+                if "num-format" in p:
+                    cell = tag_numformat(cell, p)
+                r += self.cell_terminal(cell, colw[ci], p)
+            # Borders?
+            if "border-top" in p:
+                loc = "TOP"
+                if ri > 0:
+                    loc = "MIDDLE"
+                t += self.border_terminal(colw, loc)
+            t += f"{r}┃\n"
+            if "border-bottom" in p:
+                loc = "BOTTOM"
+                if ri < nrows-1:
+                    loc = "MIDDLE"
+                t += self.border_terminal(colw, loc)
+                
+        return t
+    
     
     #
     # Generates the table.
@@ -843,6 +974,12 @@ class CustomizedTable:
     #
     def display(self):
         display(HTML(self.generate()))
+
+    #
+    # Displays the table in terminal.
+    #
+    def display_terminal(self):
+        print(self.generate_terminal())
         
     #
     # Stores the table to a csv file.
