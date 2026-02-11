@@ -772,9 +772,8 @@ class CustomizedTable:
     #
     # Prints a table border in terminal
     #
-    def border_terminal(self, colw, loc): # INTERNAL
+    def border_terminal(self, colw, loc, darkmode=False): # INTERNAL
         loc = loc.upper()
-        
         h = ""
         if loc == "TOP":
             h += "┏"
@@ -782,7 +781,6 @@ class CustomizedTable:
             h += "┣"
         if loc == "BOTTOM":
             h += "┗"
-
         for i,c in enumerate(colw):
             h += "━" * (c+2)
             if i < len(colw)-1:
@@ -791,26 +789,38 @@ class CustomizedTable:
                 if loc == "MIDDLE":
                     h += "╋"
                 if loc == "BOTTOM":
-                    h += "┻"
-            
+                    h += "┻"  
         if loc == "TOP":
             h += "┓"
         if loc == "MIDDLE":
             h += "┫"
         if loc == "BOTTOM":
             h += "┛"
+        if darkmode:
+            h = colored(h, "dark_grey")
+        else:
+            h = colored(h, "light_grey")
         h += "\n"
         return h
 
     #
+    # Prints a table cell separator in terminal
+    #
+    def separator_terminal(self, darkmode=False): # INTERNAL
+        if darkmode:
+            return colored("┃", "dark_grey")
+        else:
+            return colored("┃", "light_grey")
+
+    #
     # Prints a cell value in terminal
     #
-    def cell_terminal(self, val, w, style): # INTERNAL
+    def cell_terminal(self, val, w, style, darkmode=False): # INTERNAL
         # HTML tags/formattings
         if type(val) == str:
             val = val.replace("&nbsp;"," ").replace("<br>"," ").replace("<br/>"," ")
         
-        c = "┃ "
+        c = f"{self.separator_terminal(darkmode=darkmode)} "
         # Formatting
         col = None
         attrs = []
@@ -818,18 +828,34 @@ class CustomizedTable:
             attrs.append("bold")
         if "font-style" in style and style["font-style"] == "italic":
             attrs.append("italic")
-        if "color" in style and style["color"] in ["blue","#3b08d3"]:
-            col = "blue"
-        if "color" in style and style["color"] in ["cyan","#7a03fc"]:
-            col = "cyan"
-        if "color" in style and style["color"] in ["red","#fb4b04"]:
-            col = "red"
-        if "color" in style and style["color"] in ["yellow"]:
-            col = "yellow"
-        if "color" in style and style["color"] in ["green"]:
-            col = "green"
-        if "color" in style and style["color"] in ["light_grey","light_gray","#eee"]:
-            col = "light_grey"
+        if darkmode:
+            col = "white"
+            if "color" in style and style["color"] in ["blue","#3b08d3"]:
+                col = "light_blue"
+            if "color" in style and style["color"] in ["cyan","#7a03fc"]:
+                col = "light_cyan"
+            if "color" in style and style["color"] in ["red","#fb4b04"]:
+                col = "light_red"
+            if "color" in style and style["color"] in ["yellow"]:
+                col = "light_yellow"
+            if "color" in style and style["color"] in ["green"]:
+                col = "light_green"
+            if "color" in style and style["color"] in ["grey","gray","#eee"]:
+                col = "light_grey"
+        else:
+            col = "black"
+            if "color" in style and style["color"] in ["blue","#3b08d3"]:
+                col = "blue"
+            if "color" in style and style["color"] in ["cyan","#7a03fc"]:
+                col = "cyan"
+            if "color" in style and style["color"] in ["red","#fb4b04"]:
+                col = "red"
+            if "color" in style and style["color"] in ["yellow"]:
+                col = "yellow"
+            if "color" in style and style["color"] in ["green"]:
+                col = "green"
+            if "color" in style and style["color"] in ["grey","gray","#eee"]:
+                col = "grey"
         # Append formated cell value
         c += colored(f"{val}", col, attrs=attrs)
         # Whitespace padding
@@ -840,7 +866,7 @@ class CustomizedTable:
     #
     # Generates terminal table.
     #
-    def generate_terminal(self): # INTERNAL
+    def generate_terminal(self, darkmode=False): # INTERNAL
         # Max rows
         if self.max_rows is None:
             self.max_rows = self.no_rows()
@@ -865,7 +891,7 @@ class CustomizedTable:
 
         # Generate table
         t = ""
-        t += self.border_terminal(colw, "TOP")
+        t += self.border_terminal(colw, "TOP", darkmode=darkmode)
 
         # Header
         if self.header:
@@ -875,9 +901,9 @@ class CustomizedTable:
             
             h = ""
             for ci,c in enumerate(self.cols):
-                h += self.cell_terminal(c, colw[ci], p)
-            t += f"{h}┃\n"
-            t += self.border_terminal(colw, "MIDDLE")
+                h += self.cell_terminal(c, colw[ci], p, darkmode=darkmode)
+            t += f"{h}{self.separator_terminal(darkmode=darkmode)}\n"
+            t += self.border_terminal(colw, "MIDDLE", darkmode=darkmode)
         # Rows
         nrows = len(self.rows[:self.max_rows])
         for ri,row in enumerate(self.rows[:self.max_rows]):
@@ -887,22 +913,21 @@ class CustomizedTable:
                 p = self.get_style(ci,ri)
                 if "num-format" in p:
                     cell = tag_numformat(cell, p)
-                r += self.cell_terminal(cell, colw[ci], p)
+                r += self.cell_terminal(cell, colw[ci], p, darkmode=darkmode)
             # Borders?
             if "border-top" in p:
                 loc = "TOP"
                 if ri > 0:
                     loc = "MIDDLE"
-                t += self.border_terminal(colw, loc)
-            t += f"{r}┃\n"
+                t += self.border_terminal(colw, loc, darkmode=darkmode)
+            t += f"{r}{self.separator_terminal(darkmode=darkmode)}\n"
             if "border-bottom" in p:
                 loc = "BOTTOM"
                 if ri < nrows-1:
                     loc = "MIDDLE"
-                t += self.border_terminal(colw, loc)
+                t += self.border_terminal(colw, loc, darkmode=darkmode)
                 
         return t
-    
     
     #
     # Generates the table.
@@ -982,8 +1007,8 @@ class CustomizedTable:
     #
     # Displays the table in terminal.
     #
-    def display_terminal(self):
-        print(self.generate_terminal())
+    def display_terminal(self, darkmode=False):
+        print(self.generate_terminal(darkmode))
         
     #
     # Stores the table to a csv file.
