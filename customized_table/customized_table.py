@@ -812,7 +812,7 @@ class CustomizedTable:
         
         c = "┃ "
         # Formatting
-        col = "black"
+        col = None
         attrs = []
         if "font-weight" in style and style["font-weight"] == "bold":
             attrs.append("bold")
