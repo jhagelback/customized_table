@@ -806,6 +806,10 @@ class CustomizedTable:
     # Prints a cell value in terminal
     #
     def cell_terminal(self, val, w, style): # INTERNAL
+        # HTML tags/formattings
+        if type(val) == str:
+            val = val.replace("&nbsp;"," ").replace("<br>"," ").replace("<br/>"," ")
+        
         c = "┃ "
         # Formatting
         col = "black"
